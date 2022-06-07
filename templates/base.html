@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <title>{% block title %}{% endblock %}</title>
+        <style>
+            {% if small_text_color %}
+            #small_text {
+                color: {{ small_text_color }};
+            }
+            {% endif %}
+        </style>
+    </head>
+    <body>
+        {% if not hide_home_link -%}
+            <a href="/">На главную</a>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+        {% if small_text %}
+            <p><small id="small_text">{{ small_text }}</small></p>
+        {% endif %}
+        <script>
+            function redirectTo(str) {
+                document.location.href = str;
+            }
+            {% if redirect_timeout %}
+                setTimeout(function() {redirectTo('{{ redirect_address }}')}, {{ redirect_timeout }})
+            {% endif %}
+        </script>
+    </body>
+</html>
