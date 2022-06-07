@@ -4,13 +4,7 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
         <title>{% block title %}{% endblock %}</title>
-        <style>
-            {% if small_text_color %}
-            #small_text {
-                color: {{ small_text_color }};
-            }
-            {% endif %}
-        </style>
+        <script src="{{ url_for('static', filename='script/jquery.js') }}"></script>
     </head>
     <body>
         {% if not hide_home_link -%}
@@ -18,9 +12,10 @@
         {% endif %}
 
         {% block content %}{% endblock %}
-        {% if small_text %}
-            <p><small id="small_text">{{ small_text }}</small></p>
-        {% endif %}
+
+        {% for cat, msg in get_flashed_messages(True) %}
+            <p class="flash {{ cat }}">{{ msg }}</p>
+        {% endfor %}
         <script>
             function redirectTo(str) {
                 document.location.href = str;

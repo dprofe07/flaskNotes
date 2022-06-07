@@ -1,118 +1,83 @@
-import sqlite3
-
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 
 from user import User
 
 app = Flask(__name__)
 db_name = 'static/users_db.db'
-current_user = None
-information = []
+app.config['current_user'] = None
+app.config['SECRET_KEY'] = 'fdgdfgdfggf786hfg6hfg6h7f'
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html', user=current_user, hide_home_link=True)
+    if request.method == 'POST':
+        app.config['current_user'] = None
+    return render_template('index.html', user=app.config['current_user'], hide_home_link=True)
 
 
 @app.route('/save', methods=['POST'])
 def save():
     notes = request.form['notes']
-    if current_user is not None:
-        current_user.notes = notes
-        current_user.write_to_db(db_name)
+    if app.config['current_user'] is not None:
+        app.config['current_user'].notes = notes
+        app.config['current_user'].write_to_db(db_name)
     return redirect('/', 301)
 
 
-@app.route('/logout')
-def logout():
-    global current_user
-    current_user = None
-    return redirect('/', 301)
+@app.errorhandler(404)
+def err404(e):
+    return render_template('error.html', error_message='Страница не найдена')
 
 
-@app.route('/login', methods=['POST'])
-def login():
-    login = request.form['login']
-    password = request.form['password']
-    user = User.find_by_login(login, db_name)
-    if user is not None:
-        if password == user.password:
-            global current_user
-            current_user = user
-            return redirect('/', 301)
-        else:
-            information.append({
-                'forpage': 'auth',
-                'small_text': f'Неверный пароль для пользователя "{login}"',
-                'small_text_color': 'red',
-                'login': login,
-                'password': password,
-            })
-            return redirect('/auth', 301)
-    else:
-        information.append({
-            'forpage': 'auth',
-            'small_text': f'Пользователь с именем "{login}" не найден.',
-            'small_text_color': 'red',
-            'login': login,
-            'password': password,
-        })
-        return redirect('/auth', 301)
-
-
-@app.route('/auth')
+@app.route('/auth', methods=['POST', 'GET'])
 def auth():
-    dct = {}
-    for i in range(len(information)):
-        if information[i]['forpage'] == 'auth':
-            dct = information[i]
-            information.pop(i)
-            break
-
-    return render_template('auth.html', **dct)
-
-
-@app.route('/create_account', methods=['POST'])
-def create_account():
-    login = request.form['login']
-    password = request.form['password']
-    information.append({
-        'forpage': 'signup',
-    })
-    if User.find_by_login(login, db_name) is not None:
-        information[-1].update({
-            'small_text': f'Пользователь с именем "{login}" уже существует.',
-            'small_text_color': 'red',
-            'login': login,
-        })
+    if app.config['current_user'] is not None:
+        return redirect('/', 301)
+    if request.method == 'POST':
+        login = request.form['login']
+        password = request.form['password']
+        user = User.find_by_login(login, db_name)
+        if user is not None:
+            if password == user.password:
+                app.config['current_user'] = user
+                flash('Вы успешно вошли', 'success')
+                return render_template('auth.html', redirect_timeout=1000, redirect_address='/')
+            else:
+                flash(f'Неверный пароль для пользователя "{login}"', 'error')
+                return render_template('auth.html', login=login, password=password)
+        else:
+            flash(f'Пользователь с именем "{login}" не найден.', 'error')
+            return render_template('auth.html', login=login, password=password)
     else:
-        user = User(login, password, '')
-        user.write_to_db(db_name)
-
-        global current_user
-        current_user = user
-
-        information[-1].update({
-            'small_text': 'Вы успешно зарегистрированы',
-            'small_text_color': 'dark-green',
-            'redirect_timeout': 3000,
-            'redirect_address': '/'
-        })
-    return redirect('/signup', 301)
+        return render_template('auth.html')
 
 
-@app.route('/signup')
+@app.route('/signup', methods=['POST', 'GET'])
 def signup():
-    dct = {}
-    for i in range(len(information)):
-        if information[i]['forpage'] == 'signup':
-            dct = information[i]
-            information.pop(i)
-            break
+    if request.method == 'POST':
+        login = request.form['login']
+        password = request.form['password']
+        password2 = request.form['password2']
 
-    return render_template('singup.html', **dct)
+        if password != password2:
+            flash(f'Пароли не совпадают', 'error')
+            return render_template('singup.html', login=login, password=password)
+
+        elif User.find_by_login(login, db_name) is not None:
+            flash(f'Пользователь с именем "{login}" уже существует.', 'error')
+            return render_template('singup.html', login=login, password=password, password2=password2)
+
+        else:
+            user = User(login, password, '')
+            user.write_to_db(db_name)
+
+            app.config['current_user'] = user
+
+            flash('Вы успешно зарегистрированы', 'success')
+            return render_template('singup.html', redirect_timeout=1000, redirect_address='/')
+    else:
+        return render_template('singup.html')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run('192.168.0.200', 5000, True)

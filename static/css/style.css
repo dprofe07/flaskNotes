@@ -1,3 +1,15 @@
 h1 {
     color: red;
 }
+
+.flash {
+    font-size: 0.8em;
+}
+
+.flash .success {
+    color: green;
+}
+
+.flash .error {
+    color: red;
+}

@@ -4,9 +4,16 @@
 
 {% block content -%}
     <h1>Регистрация</h1>
-    <form method="post" action="/create_account">
-        <label for="login">Логин: </label><input type="text" name="login" id="login" placeholder="Логин" required value="{{ login }}"/><br/>
-        <label for="password">Пароль: </label><input type="password" name="password" id="password" placeholder="Пароль" required/>
+    <form method="post" action="/signup">
+        <label for="login">Логин: </label>
+        <input type="text" name="login" id="login" placeholder="Логин" required value="{{ login }}"/><br/>
+
+        <label for="password">Пароль: </label>
+        <input type="password" name="password" id="password" placeholder="Пароль" required value="{{ password }}"/><br/>
+
+        <label for="password2">Повторите пароль: </label>
+        <input type="password" name="password2" id="password2" placeholder="Пароль" required value = "{{ password2 }}"/><br/>
+
         <input type="submit" value="Зарегистрироваться"/>
     </form>
 {% endblock %}
