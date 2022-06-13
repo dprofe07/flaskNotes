@@ -6,12 +6,6 @@
     {% if user -%}
         <h1>Привет, {{ user.login }}</h1>
         <p><a href="{{ url_for('logout') }}">Выйти из аккаунта</a></p>
-        <script>
-            function DoPost(){
-               $.post("/logout_", {name: 'a'});
-               document.location.reload();
-            }
-        </script>
         <form method="post" action="/save">
             <label for="notes">Ваши заметки</label><br/><textarea cols="50" rows="20" id="notes" name="notes">{{ user.notes }}</textarea><br/>
             <input type="submit" value="Сохранить"/>

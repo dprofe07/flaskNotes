@@ -9,7 +9,7 @@ if SERVER:
     db_data = {
         'host': 'dprofe.mysql.pythonanywhere-services.com',
         'user': 'dprofe',
-        'password': '<HIDDEN>',
+        'password': '7845126Alohomora',
         'database': 'dprofe$users',
     }
 else:
