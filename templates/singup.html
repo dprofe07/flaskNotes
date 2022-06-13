@@ -6,13 +6,16 @@
     <h1>Регистрация</h1>
     <form method="post" action="/signup">
         <label for="login">Логин: </label>
-        <input type="text" name="login" id="login" placeholder="Логин" required value="{{ login }}"/><br/>
+        <input type="text" name="login" id="login" required value="{{ login }}"/><br/>
 
         <label for="password">Пароль: </label>
-        <input type="password" name="password" id="password" placeholder="Пароль" required value="{{ password }}"/><br/>
+        <input type="password" name="password" id="password" required value="{{ password }}"/><br/>
 
         <label for="password2">Повторите пароль: </label>
-        <input type="password" name="password2" id="password2" placeholder="Пароль" required value = "{{ password2 }}"/><br/>
+        <input type="password" name="password2" id="password2" required value = "{{ password2 }}"/><br/>
+
+        <label for="keyword">Ключевое слово (Нужно для восстановления пароля): </label>
+        <input type="text" name="keyword" id="keyword" required value="{{ keyword }}"/><br/>
 
         <input type="submit" value="Зарегистрироваться"/>
     </form>

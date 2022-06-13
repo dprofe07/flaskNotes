@@ -2,8 +2,8 @@
 <html lang="ru">
     <head>
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <title>{% block title %}{% endblock %} - Заметки</title>
     </head>
     <body>
         {% if not hide_home_link -%}
@@ -13,7 +13,7 @@
         {% block content %}{% endblock %}
 
         {% for cat, msg in get_flashed_messages(True) %}
-            <p class="flash {{ cat }}">{{ msg }}</p>
+            <p class="flash flash-{{ cat }}">{{ msg }}</p>
         {% endfor %}
         <script>
             function redirectTo(str) {

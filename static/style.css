@@ -6,10 +6,10 @@ h1 {
     font-size: 0.8em;
 }
 
-.flash .success {
+.flash-success {
     color: green;
 }
 
-.flash .error {
+.flash-error {
     color: red;
 }
