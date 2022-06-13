@@ -1,4 +1,4 @@
-SERVER = False
+SERVER = True
 
 if SERVER:
     from mysql import connector
